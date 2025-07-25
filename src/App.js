@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+
+import { useState, useEffect } from "react";
+import "./App.css";
 
 function App() {
+  const [threads, setThreads] = useState([]);
+
+  useEffect(() => {
+    fetch("https://railway.bulletinboard.techtrain.dev/threads?offset=0")
+      .then( Response => Response.json())
+      .then(data => {
+      console.log("created_at check:", data.map(t => t.created_at));
+      setThreads(data);
+    })
+      .catch(error => console.error("エラー", error));
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header>
+        <h1>スレッド一覧</h1>
       </header>
+        <ul>
+          {threads.map((thread) => (
+            <li key={thread.id}>
+              {thread.title} 
+            </li>
+          ))}
+        </ul>
     </div>
   );
 }
